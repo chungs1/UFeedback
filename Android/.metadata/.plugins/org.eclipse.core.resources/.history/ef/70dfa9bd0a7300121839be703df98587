@@ -1,0 +1,94 @@
+package com.example.feedback;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class MainActivity extends Activity implements OnClickListener {
+	TextView test_string;
+	private ProgressDialog pDialog;
+	private Button submit_feedback;
+	private EditText feedback_form;
+	
+	private static final String TAG = "MyActivity";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        test_string = (TextView)findViewById(R.id.test_string);
+        test_string.setText("hey jeff");
+        
+        submit_feedback = (Button)findViewById(R.id.submit_feedback);
+        submit_feedback.setOnClickListener(this);
+        
+        feedback_form = (EditText)findViewById(R.id.feedback_form);
+    }
+    
+    private class TestPost extends AsyncTask<String, String, String> {
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+    		pDialog = new ProgressDialog(MainActivity.this);
+    		pDialog.setMessage("Submitting Feedback. Please wait..");
+    		pDialog.setIndeterminate(false);
+    		pDialog.setCancelable(false);
+    		pDialog.show();
+    	}
+
+		@Override
+		protected String doInBackground(String... param) {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost("http://www.feedbackapp.hostoi.com/testmsg.php");
+
+			try {
+			    // Add your data
+			    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			    nameValuePairs.add(new BasicNameValuePair("herro", "you sucks"));
+			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			    // Execute HTTP Post Request
+			    HttpResponse response = httpclient.execute(httppost);
+
+			} catch (Exception e) {
+			    // TODO Auto-generated catch block
+			} catch (IOException e) {
+			    // TODO Auto-generated catch block
+			}
+			return "finished";
+		}
+		
+		protected void onPostExecute(String file_url) {
+			test_string.setText("Heyy Vincent");
+			pDialog.dismiss();
+		}
+    }
+
+	@Override
+	public void onClick(View arg0) {
+		String feedback_text = feedback_form.getText().toString();
+		new TestPost().execute(feedback_text);
+	}
+    
+    
+}

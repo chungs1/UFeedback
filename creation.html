@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Feedback Page </title>
+	<link href='bootstrap/css/bootstrap.css' rel='stylesheet'>
+	<link href='bootstrap/css/bootstrap-responsive.min.css' rel='stylesheet'>
+	<link href='datepicker/css/datepicker.css' rel='stylesheet'>
+	
+	<style>
+		.box{
+			-moz-border-radius-bottomright: 50px;
+			border-radius: 50px;
+			border: 5px solid #a1a1a1;
+		}
+		
+	</style>
+	
+</head>
+
+<body style="background-image:url('images/grad.png'); background-repeat: repeat-x;">
+
+	<!--Navbar -->
+	<div class='container-fluid'>
+		<div class='row-fluid'>
+			<div class='span8 offset2' style='margin-top:2%'>
+				<div class='container-fluid'>
+					<h3 class='span2' style='margin-top:-.5%; color: white;'> UFeedback</h3>
+					<a href='#signOut' role='button' class='btn pull-right'>Sign Out</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--teacher table creation-->
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span8 offset2" style="margin-top:5%">
+				<div id="tablecreate">
+					<div class="container-fluid box" style="background-color:white">
+					<center>
+					<form >
+						<fieldset>
+							<legend>Create your session</legend>
+							<label style="margin-left:-43%">Title of Class</label>
+							<input type="text" placeholder="Title for Class" style="width:50%;height:40px;font-size:18px">
+							<label style="margin-left:-41%">Instructor Name</label>
+							<input type="text" placeholder="Shewchuk" style="width:50%;height:40px;font-size:18px">
+							<br />
+							<button style="margin-top:5%"class='btn btn-large btn-success' type="submit">Make a Session</button>
+							
+						
+						</fieldset>
+					</form>
+					</center>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<script src='js/jquery.js'></script>
+	<script src='bootstrap/js/bootstrap.js'></script>
+</body>
+</html>

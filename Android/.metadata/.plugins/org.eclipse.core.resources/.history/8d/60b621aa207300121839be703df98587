@@ -1,0 +1,118 @@
+package com.example.feedback;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends Activity implements OnClickListener {
+	TextView test_string;
+	private ProgressDialog pDialog;
+	private Button submit_feedback;
+	private EditText feedback_form;
+	
+	private static final String TAG = "MyActivity";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        test_string = (TextView)findViewById(R.id.test_string);
+        test_string.setText("Please enter a Session ID ");
+        
+        submit_feedback = (Button)findViewById(R.id.submit_feedback);
+        submit_feedback.setOnClickListener(this);
+        submit_feedback.setText("Submit");
+        
+        feedback_form = (EditText)findViewById(R.id.feedback_form);
+    }
+    
+    private class TestPost extends AsyncTask<String, String, String> {
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+    		pDialog = new ProgressDialog(MainActivity.this);
+    		pDialog.setMessage("Validating Session ID. Please wait..");
+    		pDialog.setIndeterminate(false);
+    		pDialog.setCancelable(true);
+    		pDialog.show();
+    	}
+
+		@Override
+		protected String doInBackground(String... param) {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost("http://www.feedbackapp.hostoi.com/check_session.php");
+
+			try {
+			    // Add your data
+			    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			    nameValuePairs.add(new BasicNameValuePair("SessionID", param[0]));
+			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			    // Execute HTTP Post Request
+			    HttpResponse response = httpclient.execute(httppost);
+			    
+			    //Grab Response Information
+			    HttpEntity entity = response.getEntity();
+			    String responseText = EntityUtils.toString(entity);
+			    return responseText;
+			    
+
+			} catch (Exception e) {
+			    Log.i(TAG, e.toString());
+			    return "Error!";
+			}
+		}
+		
+		protected void onPostExecute(String result) {
+			if (result.equals("Session ID Not Found")) {
+				Context context = MainActivity.this;
+				CharSequence text = "Invalid Session ID! Please submit another to continue.";
+				int duration = Toast.LENGTH_LONG;
+
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.show();
+			}
+			else {
+				Bundle message = new Bundle();
+				message.putString("SessionID", feedback_form.getText().toString());
+				message.putString("Topic", result);
+				Intent lookup = new Intent(MainActivity.this, SessionScreen.class);
+				lookup.putExtras(message);
+				startActivity(lookup);
+			}
+			pDialog.dismiss();
+		}
+    }
+
+	@Override
+	public void onClick(View arg0) {
+		String feedback_text = feedback_form.getText().toString();
+		new TestPost().execute(feedback_text);
+	}
+    
+    
+}

@@ -1,0 +1,66 @@
+package com.example.feedback;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class MainActivity extends Activity implements OnClickListener {
+	TextView test_string;
+	private ProgressDialog pDialog;
+	private Button submit_feedback;
+	private EditText feedback_form;
+	
+	private static final String TAG = "MyActivity";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        test_string = (TextView)findViewById(R.id.test_string);
+        test_string.setText("hey jeff");
+        
+        submit_feedback = (Button)findViewById(R.id.submit_feedback);
+        submit_feedback.setOnClickListener(this);
+        
+        feedback_form = (EditText)findViewById(R.id.feedback_form);
+    }
+    
+    private class TestPost extends AsyncTask<String, String, String> {
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+    		pDialog = new ProgressDialog(MainActivity.this);
+    		pDialog.setMessage("Submitting Feedback. Please wait..");
+    		pDialog.setIndeterminate(false);
+    		pDialog.setCancelable(false);
+    		pDialog.show();
+    	}
+
+		@Override
+		protected String doInBackground(String... param) {
+			Log.i("Testing", param[0]);
+			return "finished";
+		}
+		
+		protected void onPostExecute(String file_url) {
+			test_string.setText("Heyy Vincent");
+			pDialog.dismiss();
+		}
+    }
+
+	@Override
+	public void onClick(View arg0) {
+		String feedback_text = feedback_form.getText().toString();
+		new TestPost().execute(feedback_text);
+	}
+    
+    
+}

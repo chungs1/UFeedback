@@ -1,0 +1,13 @@
+Account: 
+website: feedbackapp.hostoi.com 
+username a1145606 
+password hellogoodbye123 
+
+FTP host name	feedbackapp.hostoi.com
+FTP user name	a1145606
+FTP password	calstudent123
+
+$mysql_host = "mysql10.000webhost.com";
+$mysql_database = "a1145606_data";
+$mysql_user = "a1145606_admin";
+$mysql_password = "calstudent123";
